@@ -1,0 +1,327 @@
+User name = userplayer
+Password =  player123
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <string>
+
+
+using namespace std;
+
+
+const int MAX_Players = 1000;
+
+
+struct player {
+    int id;
+    string firstName;
+    string lastName;
+    string dateOfBirth;
+    int runs;
+    string team;
+};
+
+
+player players[MAX_Players];
+int numplayers = 0;
+
+
+void addPlayer();
+void manageteams();
+void searchplayer();
+void displayplayer();
+void saveplayer();
+void loadplayer();
+
+int main() {
+    loadplayer();
+    string username;
+    string password;
+    string username1 = "userplayer";
+    string password1 = "player123";
+    int choice;
+
+    
+    do {
+        cout << "\n1.login";
+        cout << "\n2.exit";
+        cout << "\nenter choice number: ";
+        cin >> choice;
+
+        if (choice ==1) {
+            do {
+                cout << "\nenter username: ";
+                cin >> username;
+                cout << "\nenter password: ";
+                cin >> password;
+                if (username == username1 && password == password1) {
+
+                    loadplayer();
+
+                    int choice;
+                    do {
+                        cout << "\n===== player Record Management =====" << endl;
+                        cout << "1. Add new player" << endl;
+                        cout << "2. Manage Teams" << endl;
+                        cout << "3. Search for a player" << endl;
+                        cout << "4. Display All player" << endl;
+                        cout << "5. Save player Records to File" << endl;
+                        cout << "6. logout" << endl;
+                        cout << "Enter your choice: ";
+                        cin >> choice;
+
+                        switch (choice) {
+                        case 1:
+                            addPlayer();
+                            break;
+                        case 2:
+                            manageteams();
+                            break;
+                        case 3:
+                            searchplayer();
+                            break;
+                        case 4:
+                            displayplayer();
+                            break;
+                        case 5:
+                            saveplayer();
+                            break;
+                        case 6:
+                            cout << "\nsuccessfully logout from the user menu" << endl;
+                            break;
+
+                        default:
+                            cout << "Invalid choice. Please enter a number between 1 and 6." << endl;
+                            break;
+                        }
+                    } while (choice != 6);
+                }
+                else {
+                    cout << "\ninvalid pasword try again!\n";
+                }
+            } while (username != username1 && password != password1);
+        }
+        else if(choice ==2) {
+            cout << "\nexiting the programme!\n";
+        }
+        else {
+            cout << "\ninvalid choice\n";
+        }
+
+        
+    } while ((username != username1 || password != password1) || choice != 2);
+
+    return 0;
+}
+
+void addPlayer() {
+    if (numplayers >= MAX_Players) {
+        cout << "\nMaximum number of players reached. Cannot insert more.\n" << endl;
+        return;
+    }
+
+    int id;
+    string firstName;
+    string lastName;
+    string dateOfBirth;
+    int runs;
+    string team;
+    cout << "Enter player Registration Number: ";
+    cin >> id;
+
+    
+    for (int i = 0; i < numplayers; ++i) {
+        if (players[i].id == id) {
+            cout << "player with register number " << id << " already exists. Please enter a different register number." << endl;
+            return;
+        }
+    }
+
+    cout << "Enter player name: ";
+    cin.ignore(); 
+    getline(cin, firstName);
+
+    cout << "Enter player last name: ";
+    getline(cin, lastName);
+
+    cout << "Enter player date of birth: ";
+    getline(cin, dateOfBirth);
+
+    cout << "Enter runs scored: ";
+    cin >> runs;
+
+    cout << "Select 2 teams from ( New york yankees, Boston Red sox, Philadelphia philies, st. louis cardinals, Los angles dodgers ) : ";
+    cin.ignore();
+    getline(cin, team);
+    players[numplayers].id = id;
+    players[numplayers].firstName = firstName;
+    players[numplayers].lastName = lastName;
+    players[numplayers].dateOfBirth = dateOfBirth;
+    players[numplayers].runs = runs;
+    players[numplayers].team = team;
+    numplayers++;
+
+    cout << "\nPlayer Registered successfully." << endl;
+}
+void manageteams() {
+    cout << "\n1.Update Player\n";
+    cout << "\n2.Delete player\n";
+    cout << "\nEnter choice Number: ";
+    int choice;
+    cin >> choice;
+    bool found = false;
+    if (choice == 1) {
+        int id;
+        cout << "Enter player register Number to update: ";
+        cin >> id;
+
+        bool found = false;
+        for (int i = 0; i < numplayers; ++i) {
+            if (players[i].id == id) {
+                cout << "Enter new first name: ";
+                cin.ignore();
+                getline(cin, players[i].firstName);
+
+                cout << "Enter new Last name: ";
+                getline(cin, players[i].lastName);
+
+                cout << "Enter Date of Birth: ";
+                getline(cin, players[i].dateOfBirth);
+
+                cout << "Enter new runs scored: ";
+                cin >> players[i].runs;
+
+                cout << "Select new teams ( New york yankees, Boston Red sox, Philadelphia philies, st. louis cardinals, Los angles dodgers ): ";
+                cin.ignore();
+                getline(cin, players[i].team);
+
+
+                found = true;
+                cout << "player updated successfully." << endl;
+                break;
+                
+            }
+            if (!found) {
+                cout << "\nPlayer Not found!\n";
+            }
+        }
+
+    }
+    else if (choice == 2) {
+        int id;
+        cout << "Enter player registration number to delete: ";
+        cin >> id;
+
+        bool found = false;
+        for (int i = 0; i < numplayers; ++i) {
+            if (players[i].id == id) {
+                // Shift remaining elements left
+                for (int j = i; j < numplayers - 1; ++j) {
+                    players[j] = players[j + 1];
+                }
+                numplayers--;
+                found = true;
+                cout << "Student deleted successfully." << endl;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "player with register number " << id << " not found." << endl;
+        }
+
+    }
+    else {
+        cout << "\nInvalid Number!\n";
+    }
+
+
+
+}
+
+
+
+
+
+
+
+void searchplayer() {
+    int id;
+    cout << "Enter player register number to search: ";
+    cin >> id;
+
+    bool found = false;
+    for (int i = 0; i < numplayers; ++i) {
+        if (players[i].id == id) {
+            cout << "player found: register number = " << players[i].id << "\nName: " << players[i].firstName << " " << players[i].lastName << "\ndate of birth: " << players[i].dateOfBirth << "\nruns scored: " << players[i].runs << "\nselected teams: " << players[i].team << endl;
+            
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "player with register number " << id << " not found." << endl;
+    }
+}
+
+
+void displayplayer() {
+    if (numplayers == 0) {
+        cout << "No players to display." << endl;
+        return;
+    }
+
+    cout << "player Records:" << endl;
+    
+    for (int i = 0; i < numplayers; ++i) {
+        cout << players[i].id << "\nName: " << players[i].firstName << " " << players[i].lastName << "\ndate of birth: " << players[i].dateOfBirth << "\nruns scored: " << players[i].runs << "\nselected teams: " << players[i].team << endl;
+
+    }
+}
+
+
+void saveplayer() {
+    ofstream outFile("s.txt");
+
+    if (!outFile) {
+        cerr << "Unable to open file players.txt" << endl;
+        return;
+    }
+
+    for (int i = 0; i < numplayers; ++i) {
+        outFile << players[i].id << "\n" << "\nName: " << players[i].firstName << " " << players[i].lastName << "\ndate of birth: " << players[i].dateOfBirth << "\nruns scored: " << players[i].runs << "\nselected teams: " << players[i].team << endl;
+
+    }
+
+    outFile.close();
+    cout << "player records saved to players.txt." << endl;
+}
+
+
+void loadplayer() {
+    ifstream inFile("players.txt");
+    numplayers = 0; 
+
+    if (!inFile) {
+        cerr << "Unable to open file players.txt" << endl;
+        return;
+    }
+
+    string line;
+    while (getline(inFile, line)) {
+        stringstream ss(line);
+        string token;
+
+        getline(ss, token, ',');
+        players[numplayers].id = stoi(token);
+
+        getline(ss, players[numplayers].firstName);
+        numplayers++;
+    }
+
+    inFile.close();
+    cout << "players records loaded from players.txt." << endl;
+}
+
